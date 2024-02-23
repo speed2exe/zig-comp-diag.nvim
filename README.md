@@ -11,7 +11,8 @@
 - This plugin then parses output from the stderr, map them into neovim diagnostic and sets them to respective buffers.
 
 ## Screenshots
-Below are some common scenarios that ZLS is not able to catch
+Below are some common scenarios that ZLS is not able to catch:
+
 ![Screenshot](./screenshot/try.png)
 ![Screenshot](./screenshot/unknown_func.png)
 ![Screenshot](./screenshot/const.png)
