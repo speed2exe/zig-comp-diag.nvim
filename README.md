@@ -2,8 +2,6 @@
 - Neovim plugin to show diagnostic from zig compiler
 
 ## Background
-- ZLS is great but it doesn't catch many common compiler errors.
-- This plugin attempts to fill in the remaining gaps using zig compiler's error messages.
 - This project is motivated from the fact that I spent way too much time bouncing from compiler error messages to neovim.
 
 ## What it does?
@@ -11,8 +9,6 @@
 - This plugin then parses output from the stderr, map them into neovim diagnostic and sets them to respective buffers.
 
 ## Screenshots
-Below are some common scenarios that ZLS is not able to catch:
-
 ![Screenshot](./screenshot/return_type.png)
 ![Screenshot](./screenshot/unknown_func.png)
 ![Screenshot](./screenshot/const.png)
