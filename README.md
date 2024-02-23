@@ -13,7 +13,7 @@
 ## Screenshots
 Below are some common scenarios that ZLS is not able to catch:
 
-![Screenshot](./screenshot/try.png)
+![Screenshot](./screenshot/return_type.png)
 ![Screenshot](./screenshot/unknown_func.png)
 ![Screenshot](./screenshot/const.png)
 ![Screenshot](./screenshot/missing_args.png)
