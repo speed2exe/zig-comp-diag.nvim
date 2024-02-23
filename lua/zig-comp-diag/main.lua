@@ -41,24 +41,21 @@ local function on_stderr(_, output_lines, _)
   end
 end
 
-local prev_comp_diag_by_bufnr = {}
 local function on_exit(_, _, _)
-  -- reset old diagnostics
-  for bufnr, _ in pairs(prev_comp_diag_by_bufnr) do
-    vim.diagnostic.reset(zig_comp_diag_ns, bufnr)
-  end
+  -- clear all diagnostics for the namespace
+  vim.diagnostic.reset(zig_comp_diag_ns)
 
-  -- set new diagnostics
+  -- set the diagnostics for each buffer
   for bufnr, diagnostics in pairs(cur_comp_diag_by_bufnr) do
     vim.diagnostic.set(zig_comp_diag_ns, bufnr, diagnostics, {})
   end
 
-  -- save old diagnostics
-  prev_comp_diag_by_bufnr = cur_comp_diag_by_bufnr
+  -- clear the table
+  cur_comp_diag_by_bufnr = {}
 end
 
 M.runWithCmd = function(cmd)
-  vim.fn.jobstart(vim.split(cmd, " "), {
+  vim.fn.jobstart(cmd, {
     on_stderr = on_stderr,
     on_exit = on_exit,
     stdout_buffered = true,
