@@ -21,12 +21,13 @@ M.runWithCmd = main.runWithCmd
 -- :ZigCompDiag
 -- :ZigCompDiag zig build
 vim.api.nvim_create_user_command('ZigCompDiag', function(opts)
-  local args = opts.fargs
   if #opts.fargs > 0 then
-    main.runWithCmd(args)
+    main.runWithCmd(vim.split(opts.args, ' '))
   else
     main.runWithCmd(zig_comp_diag_cmd())
   end
 end, { nargs = '?' })
+
+M.setup = function() end
 
 return M
