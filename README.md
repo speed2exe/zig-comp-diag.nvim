@@ -19,7 +19,7 @@ Below are some common scenarios that ZLS is not able to catch:
 ![Screenshot](./screenshot/missing_args.png)
 
 ## Install
-Using [lazy.nvim][https://github.com/folke/lazy.nvim]:
+Using [lazy.nvim](https://github.com/folke/lazy.nvim):
 ```lua
 {
   'speed2exe/zig-comp-diag.nvim',
@@ -29,7 +29,7 @@ Using [lazy.nvim][https://github.com/folke/lazy.nvim]:
 }
 ```
 
-Using [packer.nvim][https://github.com/wbthomason/packer.nvim]:
+Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
 ```lua
 use {
  'speed2exe/zig-comp-diag.nvim',
