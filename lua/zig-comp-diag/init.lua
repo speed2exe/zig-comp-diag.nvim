@@ -2,7 +2,7 @@ local vim = vim
 
 local M = {}
 
-local source = require('zig-comp-diag.main')
+local main = require('zig-comp-diag.main')
 
 -- Guess the zig build command
 local function zig_comp_diag_cmd()
@@ -15,6 +15,6 @@ M.run = function()
   M.runWithCmd(cmd)
 end
 
-M.runWithCmd = source.runWithCmd
+M.runWithCmd = main.runWithCmd
 
 return M

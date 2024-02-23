@@ -4,18 +4,10 @@ local vim = vim
 local zig_comp_diag_ns = vim.api.nvim_create_namespace('zig_comp_diag')
 local utils = require('zig-comp-diag.utils')
 
-local prev_comp_diag_by_bufnr = {}
-M.runWithCmd = function(cmd)
-  local handle = io.popen(cmd .. " 2>&1")
-  if handle == nil then
-    print("Failed to run command: " .. vim.g.zig_comp_diag_cmd)
-    return
-  end
-  local output_string = handle:read("*a")
-  handle:close()
-
-  local comp_diag_by_bufnr = {}
-  for line in output_string:gmatch("[^\r\n]+") do
+local cur_comp_diag_by_bufnr = {}
+local function on_stderr(_, output_lines, _)
+  -- local comp_diag_by_bufnr = {}
+  for _, line in ipairs(output_lines) do
     -- because lua doesn't have continue statement :(
     local file_name, remain1 = utils.splitStringAtDelimiter(line, ":")
     if remain1 ~= nil then
@@ -30,12 +22,12 @@ M.runWithCmd = function(cmd)
             vim.fn.bufload(bufnr)
 
             -- initialize the table for buffer number if it doesn't exist
-            if comp_diag_by_bufnr[bufnr] == nil then
-              comp_diag_by_bufnr[bufnr] = {}
+            if cur_comp_diag_by_bufnr[bufnr] == nil then
+              cur_comp_diag_by_bufnr[bufnr] = {}
             end
 
             -- add diagnostic for bufnr
-            table.insert(comp_diag_by_bufnr[bufnr], {
+            table.insert(cur_comp_diag_by_bufnr[bufnr], {
               bufnr = bufnr,
               lnum = tonumber(lnum) - 1,
               col = tonumber(col),
@@ -47,21 +39,30 @@ M.runWithCmd = function(cmd)
       end
     end
   end
+end
 
+local prev_comp_diag_by_bufnr = {}
+local function on_exit(_, _, _)
   -- reset old diagnostics
   for bufnr, _ in pairs(prev_comp_diag_by_bufnr) do
-    if comp_diag_by_bufnr[bufnr] == nil then
-      vim.diagnostic.reset(zig_comp_diag_ns, bufnr)
-    end
+    vim.diagnostic.reset(zig_comp_diag_ns, bufnr)
   end
 
   -- set new diagnostics
-  for bufnr, diagnostics in pairs(comp_diag_by_bufnr) do
+  for bufnr, diagnostics in pairs(cur_comp_diag_by_bufnr) do
     vim.diagnostic.set(zig_comp_diag_ns, bufnr, diagnostics, {})
   end
 
   -- save old diagnostics
-  prev_comp_diag_by_bufnr = comp_diag_by_bufnr
+  prev_comp_diag_by_bufnr = cur_comp_diag_by_bufnr
+end
+
+M.runWithCmd = function(cmd)
+  vim.fn.jobstart(vim.split(cmd, " "), {
+    on_stderr = on_stderr,
+    on_exit = on_exit,
+    stdout_buffered = true,
+  })
 end
 
 return M
