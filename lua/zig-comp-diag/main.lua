@@ -27,6 +27,7 @@ M.runWithCmd = function(cmd)
           if message ~= nil then
             -- buffer number from file name
             local bufnr = tonumber(vim.fn.bufadd(file_name))
+            vim.fn.bufload(bufnr)
 
             -- initialize the table for buffer number if it doesn't exist
             if comp_diag_by_bufnr[bufnr] == nil then
