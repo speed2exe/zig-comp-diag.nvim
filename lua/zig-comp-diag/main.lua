@@ -52,6 +52,8 @@ local function on_exit(_, _, _)
 
   -- clear the table
   cur_comp_diag_by_bufnr = {}
+
+  print("zig-comp-diag: done")
 end
 
 M.runWithCmd = function(cmd)
