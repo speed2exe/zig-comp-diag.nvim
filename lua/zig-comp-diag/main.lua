@@ -61,6 +61,7 @@ M.runWithCmd = function(cmd)
     on_stderr = on_stderr,
     on_exit = on_exit,
     stdout_buffered = true,
+    stderr_buffered = true,
   })
 end
 
