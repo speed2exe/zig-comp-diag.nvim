@@ -3,6 +3,7 @@ local M = {}
 local vim = vim
 local zig_comp_diag_ns = vim.api.nvim_create_namespace('zig_comp_diag')
 local utils = require('zig-comp-diag.utils')
+local last_cmd = nil
 
 local cur_comp_diag_by_bufnr = {}
 local function on_stderr(_, output_lines, _)
@@ -41,10 +42,7 @@ local function on_stderr(_, output_lines, _)
   end
 end
 
-local function on_exit(_, _, _)
-  -- clear all diagnostics for the namespace
-  vim.diagnostic.reset(zig_comp_diag_ns)
-
+local function on_exit(_, exit_code, _)
   -- set the diagnostics for each buffer
   for bufnr, diagnostics in pairs(cur_comp_diag_by_bufnr) do
     vim.diagnostic.set(zig_comp_diag_ns, bufnr, diagnostics, {})
@@ -52,17 +50,19 @@ local function on_exit(_, _, _)
 
   -- clear the table
   cur_comp_diag_by_bufnr = {}
-
-  print("zig-comp-diag: done")
+  print("job (" .. table.concat(last_cmd, " ") .. ") exited with exit code: " .. exit_code)
 end
 
 M.runWithCmd = function(cmd)
+  -- clear all diagnostics for the namespace
+  vim.diagnostic.reset(zig_comp_diag_ns)
   vim.fn.jobstart(cmd, {
     on_stderr = on_stderr,
     on_exit = on_exit,
     stdout_buffered = true,
     stderr_buffered = true,
   })
+  last_cmd = cmd
 end
 
 return M
